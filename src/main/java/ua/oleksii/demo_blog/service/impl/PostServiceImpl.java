@@ -23,6 +23,8 @@ import java.util.Collection;
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
+    private static final String INSERT_OR_UPDATE_CONSTRAINT_VIOLATION_CODE = "23506";
+
     private final PostRepository postRepository;
     private final PostMapper postMapper;
     @Value("${api.page.size}")
@@ -46,7 +48,7 @@ public class PostServiceImpl implements PostService {
         try {
             return postRepository.save(postMapper.dtoToModel(post));
         } catch (DataIntegrityViolationException e) {
-            if(e.getMessage().contains("23506")) {
+            if(e.getMessage().contains(INSERT_OR_UPDATE_CONSTRAINT_VIOLATION_CODE)) {
                 throw new TagNotFoundException("Some of tags were not found", e);
             }
             throw e;
