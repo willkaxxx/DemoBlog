@@ -16,6 +16,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.slf4j:slf4j-api:2.0.11'
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+    implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
 
     implementation 'com.h2database:h2:2.2.224'
 
