@@ -2,6 +2,7 @@ package ua.oleksii.demo_blog.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import ua.oleksii.demo_blog.controller.dto.request.TagCreationRequestDTO;
 import ua.oleksii.demo_blog.controller.dto.response.PageableResponseDTO;
 import ua.oleksii.demo_blog.domain.Tag;
+import ua.oleksii.demo_blog.exceptions.TagInUseException;
 import ua.oleksii.demo_blog.mapper.TagMapper;
 import ua.oleksii.demo_blog.repository.TagRepository;
 import ua.oleksii.demo_blog.service.TagService;
@@ -40,6 +42,10 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public void deleteTag(int tagId) {
-        tagRepository.delete(Tag.builder().id(tagId).build());
+        try {
+            tagRepository.deleteById(tagId);
+        } catch (DataIntegrityViolationException e) {
+            throw new TagInUseException("Tag with id %s in use".formatted(tagId), e);
+        }
     }
 }

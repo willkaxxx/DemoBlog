@@ -2,6 +2,7 @@ package ua.oleksii.demo_blog.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +12,8 @@ import ua.oleksii.demo_blog.controller.dto.request.PostCreationRequestDTO;
 import ua.oleksii.demo_blog.controller.dto.response.PageableResponseDTO;
 import ua.oleksii.demo_blog.domain.Post;
 import ua.oleksii.demo_blog.domain.Tag;
+import ua.oleksii.demo_blog.exceptions.PostNotFoundException;
+import ua.oleksii.demo_blog.exceptions.TagNotFoundException;
 import ua.oleksii.demo_blog.mapper.PostMapper;
 import ua.oleksii.demo_blog.repository.PostRepository;
 import ua.oleksii.demo_blog.service.PostService;
@@ -40,7 +43,14 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post persistNewPost(PostCreationRequestDTO post) {
-        return postRepository.save(postMapper.dtoToModel(post));
+        try {
+            return postRepository.save(postMapper.dtoToModel(post));
+        } catch (DataIntegrityViolationException e) {
+            if(e.getMessage().contains("23506")) {
+                throw new TagNotFoundException("Some of tags were not found", e);
+            }
+            throw e;
+        }
     }
 
     @Override
@@ -48,7 +58,7 @@ public class PostServiceImpl implements PostService {
         return postRepository.findById(postId).map(post -> {
             post.getTags().addAll(tags);
             return postRepository.save(post);
-        }).orElseThrow(() -> new RuntimeException("Post with id %s was not found".formatted(postId)));
+        }).orElseThrow(() -> new PostNotFoundException("Post with id %s was not found".formatted(postId)));
     }
 
     @Override
@@ -56,7 +66,7 @@ public class PostServiceImpl implements PostService {
         return postRepository.findById(postId).map(post -> {
             post.getTags().removeAll(tags);
             return postRepository.save(post);
-        }).orElseThrow(() -> new RuntimeException("Post with id %s was not found".formatted(postId)));
+        }).orElseThrow(() -> new PostNotFoundException("Post with id %s was not found".formatted(postId)));
     }
 
     @Override
