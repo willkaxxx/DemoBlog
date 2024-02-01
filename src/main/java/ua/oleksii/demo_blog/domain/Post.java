@@ -1,10 +1,7 @@
 package ua.oleksii.demo_blog.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,12 +10,14 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "post")
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id_post", nullable = false)
+    @EqualsAndHashCode.Include
     private Integer id;
     @Column(name = "title", nullable = false)
     private String title;

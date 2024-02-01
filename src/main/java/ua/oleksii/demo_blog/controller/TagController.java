@@ -2,44 +2,30 @@ package ua.oleksii.demo_blog.controller;
 
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ua.oleksii.demo_blog.domain.Tag;
-import ua.oleksii.demo_blog.repository.TagHRepository;
-
-import java.util.ArrayList;
-import java.util.Map;
+import ua.oleksii.demo_blog.service.TagService;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/tags")
 public class TagController {
 
-    private final TagHRepository tagRepository;
-
-    @Value("${api.page.size}")
-    private Integer apiPageSize;
+    private final TagService tagService;
 
     @GetMapping
-    public Object getAllPosts(@RequestParam(name = "page", defaultValue = "1") Integer currentPage) {
-        Pageable pageable = PageRequest.of(currentPage - 1, apiPageSize);
-        Page<Tag> all = tagRepository.findAll(pageable);
-        var result = new ArrayList<Object>(all.getContent());
-        result.add(Map.entry("Total pages", all.getTotalPages()));
-        return result;
+    public Object getAllPosts(@RequestParam(name = "page", defaultValue = "1") int currentPage) {
+        return tagService.getTags(currentPage);
     }
 
     @PostMapping("/create")
-    public Tag createTag(final @RequestBody @Validated Tag tagToCreate) {
-        Tag saved = tagRepository.save(tagToCreate);
-        return saved;
+    public Tag createTag(final @RequestBody @Validated Tag tag) {
+        return tagService.persistNewTag(tag);
     }
 
     @DeleteMapping("/{postId}")
-    public void deleteTagById(final @PathVariable("tagId") String tagId) {
+    public void deleteTagById(final @PathVariable("tagId") int tagId) {
+        tagService.deleteTag(tagId);
     }
 }
