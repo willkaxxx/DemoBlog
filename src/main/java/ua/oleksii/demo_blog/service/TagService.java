@@ -1,11 +1,11 @@
 package ua.oleksii.demo_blog.service;
 
+import ua.oleksii.demo_blog.controller.dto.request.TagCreationRequestDTO;
+import ua.oleksii.demo_blog.controller.dto.response.PageableResponseDTO;
 import ua.oleksii.demo_blog.domain.Tag;
 
-import java.util.List;
-
 public interface TagService {
-    List<Tag> getTags(Integer currentPage);
-    Tag persistNewTag(Tag tag);
+    PageableResponseDTO<Tag> getTags(int currentPage);
+    Tag persistNewTag(TagCreationRequestDTO tag);
     void deleteTag(int tagId);
 }

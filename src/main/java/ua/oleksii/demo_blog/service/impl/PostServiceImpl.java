@@ -7,36 +7,40 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import ua.oleksii.demo_blog.controller.dto.request.PostCreationRequestDTO;
+import ua.oleksii.demo_blog.controller.dto.response.PageableResponseDTO;
 import ua.oleksii.demo_blog.domain.Post;
 import ua.oleksii.demo_blog.domain.Tag;
-import ua.oleksii.demo_blog.repository.PostHRepository;
+import ua.oleksii.demo_blog.mapper.PostMapper;
+import ua.oleksii.demo_blog.repository.PostRepository;
 import ua.oleksii.demo_blog.service.PostService;
 
 import java.util.Collection;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
-    private final PostHRepository postRepository;
+    private final PostRepository postRepository;
+    private final PostMapper postMapper;
     @Value("${api.page.size}")
     private Integer apiPageSize;
     @Override
-    public List<Post> getPostsOptionallyFilteredByTags(int currentPage, Collection<String> tagNames) {
+    public PageableResponseDTO<Post> getPostsOptionallyFilteredByTags(int currentPage, Collection<String> tagNames) {
         Pageable pageable = PageRequest.of(currentPage - 1, apiPageSize);
         Page<Post> posts = CollectionUtils.isEmpty(tagNames) ?
                 postRepository.findAllPosts(pageable) :
                 postRepository.findAllPostsWithTags(tagNames, pageable);
 
-        return posts.getContent();
-//        var result = new ArrayList<Object>(posts.getContent());
-//        result.add(Map.entry("Total pages", posts.getTotalPages()));
-//        return result;
+        return PageableResponseDTO.<Post>builder()
+                .data(posts.getContent())
+                .currentPage(currentPage)
+                .totalPages(posts.getTotalPages())
+                .build();
     }
 
     @Override
-    public Post persistNewPost(Post post) {
-        return postRepository.save(post);
+    public Post persistNewPost(PostCreationRequestDTO post) {
+        return postRepository.save(postMapper.dtoToModel(post));
     }
 
     @Override

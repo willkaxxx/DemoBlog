@@ -11,17 +11,17 @@ import ua.oleksii.demo_blog.domain.Post;
 import java.util.Collection;
 
 @Repository
-public interface PostHRepository extends CrudRepository<Post, Integer> {
+public interface PostRepository extends CrudRepository<Post, Integer> {
     @Query(value = """
             SELECT DISTINCT p.*
             FROM post p
-            JOIN post_tag pt ON p.id_post = pt.id_post
-            JOIN tag t ON pt.id_tag = t.id_tag
+            LEFT JOIN post_tag pt ON p.id_post = pt.id_post
+            LEFT JOIN tag t ON pt.id_tag = t.id_tag
             WHERE t.name IN :tagNames
             """, countQuery = """
             SELECT COUNT(DISTINCT p.id_post)
             FROM post p
-            JOIN post_tag pt ON p.id_post = pt.id_post
+            LEFT JOIN post_tag pt ON p.id_post = pt.id_post
             JOIN tag t ON pt.id_tag = t.id_tag
             WHERE t.name IN :tagNames
             """, nativeQuery = true)
@@ -30,13 +30,13 @@ public interface PostHRepository extends CrudRepository<Post, Integer> {
     @Query(value = """
             SELECT DISTINCT p.*
             FROM post p
-            JOIN post_tag pt ON p.id_post = pt.id_post
-            JOIN tag t ON pt.id_tag = t.id_tag
+            LEFT JOIN post_tag pt ON p.id_post = pt.id_post
+            LEFT JOIN tag t ON pt.id_tag = t.id_tag
             """, countQuery = """
             SELECT COUNT(DISTINCT p.id_post)
             FROM post p
-            JOIN post_tag pt ON p.id_post = pt.id_post
-            JOIN tag t ON pt.id_tag = t.id_tag
+            LEFT JOIN post_tag pt ON p.id_post = pt.id_post
+            LEFT JOIN tag t ON pt.id_tag = t.id_tag
             """, nativeQuery = true)
     Page<Post> findAllPosts(Pageable pageable);
 

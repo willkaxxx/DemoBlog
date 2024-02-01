@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import ua.oleksii.demo_blog.domain.Tag;
 
 @Repository
-public interface TagHRepository extends CrudRepository<Tag, Integer> {
+public interface TagRepository extends CrudRepository<Tag, Integer> {
 
     @Query(value = """
             SELECT DISTINCT t.*

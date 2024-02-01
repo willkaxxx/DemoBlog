@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ua.oleksii.demo_blog.controller.dto.request.PostCreationRequestDTO;
+import ua.oleksii.demo_blog.controller.dto.response.PageableResponseDTO;
 import ua.oleksii.demo_blog.domain.Post;
 import ua.oleksii.demo_blog.domain.Tag;
 import ua.oleksii.demo_blog.service.PostService;
@@ -21,7 +23,7 @@ public class PostController {
     private int apiPageSize;
 
     @GetMapping
-    public Object getPostsByTags(
+    public PageableResponseDTO<Post> getPostsByTags(
             final @RequestParam(name = "page", defaultValue = "1") int currentPage,
             final @RequestParam(value = "tag", required = false, defaultValue = "") List<String> tags
     ) {
@@ -29,7 +31,7 @@ public class PostController {
     }
 
     @PostMapping("/create")
-    public Post createPost(final @RequestBody @Validated Post postToCreate) {
+    public Post createPost(final @RequestBody @Validated PostCreationRequestDTO postToCreate) {
         return postService.persistNewPost(postToCreate);
     }
 
