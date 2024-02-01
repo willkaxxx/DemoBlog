@@ -28,7 +28,7 @@ public class PostServiceImpl implements PostService {
     @Value("${api.page.size}")
     private Integer apiPageSize;
     @Override
-    public PageableResponseDTO<Post> getPostsOptionallyFilteredByTags(int currentPage, Collection<String> tagNames) {
+    public PageableResponseDTO<Post> getPostsOptionallyFilteredByTags(final int currentPage, final Collection<String> tagNames) {
         Pageable pageable = PageRequest.of(currentPage - 1, apiPageSize);
         Page<Post> posts = CollectionUtils.isEmpty(tagNames) ?
                 postRepository.findAllPosts(pageable) :
@@ -42,7 +42,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post persistNewPost(PostCreationRequestDTO post) {
+    public Post persistNewPost(final PostCreationRequestDTO post) {
         try {
             return postRepository.save(postMapper.dtoToModel(post));
         } catch (DataIntegrityViolationException e) {
@@ -54,7 +54,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post addTagsToPost(int postId, Collection<Tag> tags) {
+    public Post addTagsToPost(final int postId, final Collection<Tag> tags) {
         return postRepository.findById(postId).map(post -> {
             post.getTags().addAll(tags);
             return postRepository.save(post);
@@ -62,7 +62,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post removeTagsFromPost(int postId, Collection<Tag> tags) {
+    public Post removeTagsFromPost(final int postId, final Collection<Tag> tags) {
         return postRepository.findById(postId).map(post -> {
             post.getTags().removeAll(tags);
             return postRepository.save(post);
@@ -70,7 +70,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void deletePost(int postId) {
+    public void deletePost(final int postId) {
         postRepository.deleteById(postId);
     }
 }

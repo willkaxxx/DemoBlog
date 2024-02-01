@@ -24,7 +24,7 @@ public class TagServiceImpl implements TagService {
     private Integer apiPageSize;
 
     @Override
-    public PageableResponseDTO<Tag> getTags(int currentPage) {
+    public PageableResponseDTO<Tag> getTags(final int currentPage) {
         Pageable pageable = PageRequest.of(currentPage - 1, apiPageSize);
         Page<Tag> tags = tagRepository.findAllTagsPageable(pageable);
 
@@ -36,12 +36,12 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Tag persistNewTag(TagCreationRequestDTO tag) {
+    public Tag persistNewTag(final TagCreationRequestDTO tag) {
         return tagRepository.save(tagMapper.dtoToModel(tag));
     }
 
     @Override
-    public void deleteTag(int tagId) {
+    public void deleteTag(final int tagId) {
         try {
             tagRepository.deleteById(tagId);
         } catch (DataIntegrityViolationException e) {
