@@ -37,7 +37,7 @@ public class GeneralControllerAdvice {
     @ExceptionHandler({TagNotFoundException.class})
     public ResponseEntity<String> handleTagNotFoundException(TagNotFoundException e) {
         log.error(e.getMessage(), e);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
     @ExceptionHandler({PostNotFoundException.class})
     public ResponseEntity<String> handlePostNotFoundException(PostNotFoundException e) {

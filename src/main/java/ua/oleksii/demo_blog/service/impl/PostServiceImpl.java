@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import ua.oleksii.demo_blog.controller.dto.request.PostCreationRequestDTO;
@@ -31,11 +32,12 @@ public class PostServiceImpl implements PostService {
     private final PostMapper postMapper;
     @Value("${api.page.default_size}")
     private Integer apiPageSize;
+
     @Override
     public PageableResponseDTO<Post> getPostsOptionallyFilteredByTags(final int currentPage,
                                                                       @Nullable final Integer pageSize,
                                                                       final Collection<String> tagNames) {
-        Pageable pageable = PageRequest.of( currentPage - 1, Optional.ofNullable(pageSize).orElse(apiPageSize));
+        Pageable pageable = PageRequest.of(currentPage - 1, Optional.ofNullable(pageSize).orElse(apiPageSize));
         Page<Post> posts = CollectionUtils.isEmpty(tagNames) ?
                 postRepository.findAllPosts(pageable) :
                 postRepository.findAllPostsWithTags(tagNames, pageable);
@@ -52,7 +54,7 @@ public class PostServiceImpl implements PostService {
         try {
             return postRepository.save(postMapper.dtoToModel(post));
         } catch (DataIntegrityViolationException e) {
-            if(e.getMessage().contains(INSERT_OR_UPDATE_CONSTRAINT_VIOLATION_CODE)) {
+            if (e.getMessage().contains(INSERT_OR_UPDATE_CONSTRAINT_VIOLATION_CODE)) {
                 throw new TagNotFoundException("Some of tags were not found", e);
             }
             throw e;
@@ -63,7 +65,11 @@ public class PostServiceImpl implements PostService {
     public Post addTagsToPost(final int postId, final Collection<Tag> tags) {
         return postRepository.findById(postId).map(post -> {
             post.getTags().addAll(tags);
-            return postRepository.save(post);
+            try {
+                return postRepository.save(post);
+            } catch (JpaObjectRetrievalFailureException e) {
+                throw new TagNotFoundException("Some of tags were not found", e);
+            }
         }).orElseThrow(() -> new PostNotFoundException("Post with id %s was not found".formatted(postId)));
     }
 
