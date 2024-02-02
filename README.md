@@ -2,6 +2,7 @@
 
 1. You may use [Blog Demo.postman_collection.json](Blog%20Demo.postman_collection.json) to use app.
 2. It is decided that tag should be created separately (post with unknown tag should not be created)
+3. Swagger available at http://localhost:8080/swagger-ui/index.html
 
 # Task definition
 Spring Boot app that provides an RESTfull API for the blog:

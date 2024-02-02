@@ -18,5 +18,12 @@ public class PostCreationRequestDTO {
     private String title;
     @NotEmpty
     private String content;
-    private Set<Tag> tags = new HashSet<>();
+    private Set<TagDTO> tags = new HashSet<>();
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class TagDTO {
+        private Integer id;
+    }
 }
