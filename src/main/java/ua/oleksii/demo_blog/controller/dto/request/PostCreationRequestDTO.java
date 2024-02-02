@@ -2,10 +2,10 @@ package ua.oleksii.demo_blog.controller.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ua.oleksii.demo_blog.domain.Tag;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,6 +24,7 @@ public class PostCreationRequestDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class TagDTO {
+        @NotNull
         private Integer id;
     }
 }
