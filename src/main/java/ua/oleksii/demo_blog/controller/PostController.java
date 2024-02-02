@@ -1,7 +1,7 @@
 package ua.oleksii.demo_blog.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ua.oleksii.demo_blog.controller.dto.request.PostCreationRequestDTO;
@@ -19,18 +19,18 @@ import java.util.Set;
 public class PostController {
 
     private final PostService postService;
-    @Value("${api.page.size}")
-    private int apiPageSize;
 
     @GetMapping
     public PageableResponseDTO<Post> getPostsByTags(
             final @RequestParam(name = "page", defaultValue = "1") int currentPage,
+            final @RequestParam(name = "pageSize", required = false) Integer pageSize,
             final @RequestParam(value = "tag", required = false, defaultValue = "") List<String> tags
     ) {
-        return postService.getPostsOptionallyFilteredByTags(currentPage, tags);
+        return postService.getPostsOptionallyFilteredByTags(currentPage, pageSize, tags);
     }
 
     @PostMapping("/create")
+    @ResponseStatus(HttpStatus.CREATED)
     public Post createPost(final @RequestBody @Validated PostCreationRequestDTO postToCreate) {
         return postService.persistNewPost(postToCreate);
     }

@@ -6,6 +6,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import ua.oleksii.demo_blog.controller.dto.request.PostCreationRequestDTO;
@@ -19,6 +20,7 @@ import ua.oleksii.demo_blog.repository.PostRepository;
 import ua.oleksii.demo_blog.service.PostService;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,11 +29,13 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
     private final PostMapper postMapper;
-    @Value("${api.page.size}")
+    @Value("${api.page.default_size}")
     private Integer apiPageSize;
     @Override
-    public PageableResponseDTO<Post> getPostsOptionallyFilteredByTags(final int currentPage, final Collection<String> tagNames) {
-        Pageable pageable = PageRequest.of(currentPage - 1, apiPageSize);
+    public PageableResponseDTO<Post> getPostsOptionallyFilteredByTags(final int currentPage,
+                                                                      @Nullable final Integer pageSize,
+                                                                      final Collection<String> tagNames) {
+        Pageable pageable = PageRequest.of( currentPage - 1, Optional.ofNullable(pageSize).orElse(apiPageSize));
         Page<Post> posts = CollectionUtils.isEmpty(tagNames) ?
                 postRepository.findAllPosts(pageable) :
                 postRepository.findAllPostsWithTags(tagNames, pageable);

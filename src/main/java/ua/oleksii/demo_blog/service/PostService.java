@@ -8,7 +8,7 @@ import ua.oleksii.demo_blog.domain.Tag;
 import java.util.Collection;
 
 public interface PostService {
-    PageableResponseDTO<Post> getPostsOptionallyFilteredByTags(int currentPage, Collection<String> tagNames);
+    PageableResponseDTO<Post> getPostsOptionallyFilteredByTags(int currentPage, Integer pageSize, Collection<String> tagNames);
     Post persistNewPost(PostCreationRequestDTO post);
     Post addTagsToPost(int postId, Collection<Tag> tags);
     Post removeTagsFromPost(int postId, Collection<Tag> tags);

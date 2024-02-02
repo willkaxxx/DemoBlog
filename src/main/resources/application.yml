@@ -13,4 +13,4 @@ spring:
     show-sql: true
   h2.console.enabled: true
 
-api.page.size: 2
+api.page.default_size: 2

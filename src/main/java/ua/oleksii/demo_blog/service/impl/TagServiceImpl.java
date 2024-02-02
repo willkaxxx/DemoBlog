@@ -6,6 +6,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import ua.oleksii.demo_blog.controller.dto.request.TagCreationRequestDTO;
 import ua.oleksii.demo_blog.controller.dto.response.PageableResponseDTO;
@@ -15,17 +16,19 @@ import ua.oleksii.demo_blog.mapper.TagMapper;
 import ua.oleksii.demo_blog.repository.TagRepository;
 import ua.oleksii.demo_blog.service.TagService;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
     private final TagRepository tagRepository;
     private final TagMapper tagMapper;
-    @Value("${api.page.size}")
+    @Value("${api.page.default_size}")
     private Integer apiPageSize;
 
     @Override
-    public PageableResponseDTO<Tag> getTags(final int currentPage) {
-        Pageable pageable = PageRequest.of(currentPage - 1, apiPageSize);
+    public PageableResponseDTO<Tag> getTags(final int currentPage, @Nullable final Integer pageSize) {
+        Pageable pageable = PageRequest.of( currentPage - 1, Optional.ofNullable(pageSize).orElse(apiPageSize));
         Page<Tag> tags = tagRepository.findAllTagsPageable(pageable);
 
         return PageableResponseDTO.<Tag>builder()

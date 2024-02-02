@@ -15,7 +15,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "127.0.0.1:8080/v1/posts/",
+							"raw": "127.0.0.1:8080/v1/posts",
 							"host": [
 								"127",
 								"0",
@@ -25,8 +25,19 @@
 							"port": "8080",
 							"path": [
 								"v1",
-								"posts",
-								""
+								"posts"
+							],
+							"query": [
+								{
+									"key": "pageSize",
+									"value": "5",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								}
 							]
 						}
 					},
@@ -248,7 +259,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "[\r\n    {\r\n        \"id\": null,\r\n        \"name\": \"tag_1\"\r\n    },\r\n    {\r\n        \"id\": null,\r\n        \"name\": \"tag_2\"\r\n    }\r\n]",
+							"raw": "[\r\n    {\r\n        \"id\": 1\r\n    },\r\n    {\r\n        \"id\": 2\r\n    }\r\n]",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -271,13 +282,13 @@
 					},
 					"response": [
 						{
-							"name": "Tag was added",
+							"name": "Add tags",
 							"originalRequest": {
 								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "[\r\n    {\r\n        \"id\": 2\r\n    }\r\n]",
+									"raw": "[\r\n    {\r\n        \"id\": 1\r\n    },\r\n    {\r\n        \"id\": 2\r\n    }\r\n]",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -285,7 +296,7 @@
 									}
 								},
 								"url": {
-									"raw": "localhost:8080/v1/posts/1/add_tags",
+									"raw": "localhost:8080/v1/posts/3/add_tags",
 									"host": [
 										"localhost"
 									],
@@ -293,7 +304,7 @@
 									"path": [
 										"v1",
 										"posts",
-										"1",
+										"3",
 										"add_tags"
 									]
 								}
@@ -312,7 +323,7 @@
 								},
 								{
 									"key": "Date",
-									"value": "Thu, 01 Feb 2024 11:36:18 GMT"
+									"value": "Fri, 02 Feb 2024 10:39:31 GMT"
 								},
 								{
 									"key": "Keep-Alive",
@@ -324,7 +335,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"id\": 1,\n    \"title\": \"Post 1\",\n    \"content\": \"This is the content of Post 1.\",\n    \"tags\": [\n        {\n            \"id\": 1,\n            \"name\": \"AI\"\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Java\"\n        }\n    ]\n}"
+							"body": "{\n    \"id\": 3,\n    \"title\": \"Post 3\",\n    \"content\": \"This is the content of Post 3.\",\n    \"tags\": [\n        {\n            \"id\": 1,\n            \"name\": \"AI\"\n        },\n        {\n            \"id\": 2,\n            \"name\": \"Java\"\n        },\n        {\n            \"id\": 3,\n            \"name\": \"Cats\"\n        }\n    ]\n}"
 						}
 					]
 				},
@@ -524,6 +535,18 @@
 							"path": [
 								"v1",
 								"tags"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "pageSize",
+									"value": "5",
+									"disabled": true
+								}
 							]
 						}
 					},
